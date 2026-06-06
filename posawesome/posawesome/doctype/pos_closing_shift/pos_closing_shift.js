@@ -22,6 +22,32 @@ frappe.ui.form.on('POS Closing Shift', {
 
 		if (frm.doc.docstatus === 0) frm.set_value("period_end_date", frappe.datetime.now_datetime());
 		if (frm.doc.docstatus === 1) set_html_data(frm);
+
+		// Apply status indicator colors
+		apply_status_colors(frm);
+	},
+
+	refresh: function (frm) {
+		// Add Recalculate button for draft documents
+		if (frm.doc.docstatus === 0 && frm.doc.pos_opening_shift) {
+			frm.add_custom_button(__('Recalculate'), function () {
+				frappe.call({
+					method: "recalculate_closing_shift",
+					doc: frm.doc,
+					callback: function (r) {
+						frm.reload_doc();
+						frappe.show_alert({
+							message: __('Closing Shift recalculated successfully'),
+							indicator: 'green'
+						});
+					}
+				});
+			});
+		}
+
+		// Apply status indicator colors after refresh
+		apply_status_colors(frm);
+		if (frm.doc.docstatus === 1) set_html_data(frm);
 	},
 
 	pos_opening_shift (frm) {
@@ -59,6 +85,7 @@ frappe.ui.form.on('POS Closing Shift', {
 				set_form_data(pos_docs, frm);
 				refresh_fields(frm);
 				set_html_data(frm);
+				apply_status_colors(frm);
 			}
 		});
 	},
@@ -74,6 +101,7 @@ frappe.ui.form.on('POS Closing Shift', {
 				set_form_payments_data(pos_payments, frm);
 				refresh_fields(frm);
 				set_html_data(frm);
+				apply_status_colors(frm);
 			}
 		});
 	}
@@ -86,6 +114,50 @@ frappe.ui.form.on('POS Closing Shift Detail', {
 	}
 });
 
+// ──────────────────────────────────────────────────────────────
+// Status Indicator Colors via CSS
+// ──────────────────────────────────────────────────────────────
+function apply_status_colors (frm) {
+	// Apply colors to payment_status in pos_transactions
+	setTimeout(() => {
+		frm.fields_dict.pos_transactions &&
+			frm.fields_dict.pos_transactions.grid &&
+			frm.fields_dict.pos_transactions.grid.grid_rows &&
+			frm.fields_dict.pos_transactions.grid.grid_rows.forEach(row => {
+				const status = row.doc.payment_status;
+				const $cell = $(row.row).find('[data-fieldname="payment_status"]');
+				$cell.css('font-weight', 'bold');
+				if (status === 'Paid') {
+					$cell.css('color', '#36b37e');
+				} else if (status === 'Partial') {
+					$cell.css('color', '#ff8b00');
+				} else if (status === 'Outstanding') {
+					$cell.css('color', '#de350b');
+				}
+			});
+
+		// Apply colors to payment_status in pos_payments
+		frm.fields_dict.pos_payments &&
+			frm.fields_dict.pos_payments.grid &&
+			frm.fields_dict.pos_payments.grid.grid_rows &&
+			frm.fields_dict.pos_payments.grid.grid_rows.forEach(row => {
+				const status = row.doc.payment_status;
+				const $cell = $(row.row).find('[data-fieldname="payment_status"]');
+				$cell.css('font-weight', 'bold');
+				if (status === 'Allocated') {
+					$cell.css('color', '#36b37e');
+				} else if (status === 'Partial') {
+					$cell.css('color', '#ff8b00');
+				} else if (status === 'Unallocated') {
+					$cell.css('color', '#de350b');
+				}
+			});
+	}, 500);
+}
+
+// ──────────────────────────────────────────────────────────────
+// Form Data Builders
+// ──────────────────────────────────────────────────────────────
 function set_form_data (data, frm) {
 	data.forEach(d => {
 		add_to_pos_transaction(d, frm);
@@ -110,6 +182,8 @@ function add_to_pos_transaction (d, frm) {
 		posting_date: d.posting_date,
 		grand_total: d.grand_total,
 		customer: d.customer
+		// Extended fields (mode_of_payment, payment_status, etc.)
+		// will be populated server-side during validate()
 	});
 }
 
@@ -120,6 +194,8 @@ function add_to_pos_payments (d, frm) {
 		paid_amount: d.paid_amount,
 		customer: d.party,
 		mode_of_payment: d.mode_of_payment
+		// Extended fields (payment_status, outstanding_amount, etc.)
+		// will be populated server-side during validate()
 	});
 }
 
@@ -184,6 +260,16 @@ function reset_values (frm) {
 	frm.set_value("grand_total", 0);
 	frm.set_value("net_total", 0);
 	frm.set_value("total_quantity", 0);
+	frm.set_value("total_sales", 0);
+	frm.set_value("total_paid", 0);
+	frm.set_value("total_credit_sales", 0);
+	frm.set_value("total_outstanding", 0);
+	frm.set_value("total_collected_outstanding", 0);
+	frm.set_value("total_cash", 0);
+	frm.set_value("total_knet", 0);
+	frm.set_value("total_online", 0);
+	frm.set_value("total_visa", 0);
+	frm.set_value("total_other_mop", 0);
 }
 
 function refresh_fields (frm) {
@@ -194,6 +280,16 @@ function refresh_fields (frm) {
 	frm.refresh_field("grand_total");
 	frm.refresh_field("net_total");
 	frm.refresh_field("total_quantity");
+	frm.refresh_field("total_sales");
+	frm.refresh_field("total_paid");
+	frm.refresh_field("total_credit_sales");
+	frm.refresh_field("total_outstanding");
+	frm.refresh_field("total_collected_outstanding");
+	frm.refresh_field("total_cash");
+	frm.refresh_field("total_knet");
+	frm.refresh_field("total_online");
+	frm.refresh_field("total_visa");
+	frm.refresh_field("total_other_mop");
 }
 
 function set_html_data (frm) {

@@ -11,7 +11,13 @@
   "column_break_3",
   "customer",
   "paid_amount",
-  "mode_of_payment"
+  "mode_of_payment",
+  "section_break_extended",
+  "payment_status",
+  "outstanding_amount",
+  "column_break_extended_2",
+  "sales_invoice",
+  "collection_type"
  ],
  "fields": [
   {
@@ -55,13 +61,55 @@
   {
    "fieldname": "mode_of_payment",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Mode Of Payment",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_extended",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "default": "Allocated",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Payment Status",
+   "options": "\nAllocated\nPartial\nUnallocated",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Outstanding Amount",
+   "options": "company:company_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_extended_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "label": "Related Sales Invoice",
+   "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "default": "New Sale",
+   "fieldname": "collection_type",
+   "fieldtype": "Select",
+   "label": "Collection Type",
+   "options": "\nNew Sale\nOutstanding Collection",
+   "read_only": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-06-12 02:59:56.133380",
+ "modified": "2026-06-07 02:13:00.000000",
  "modified_by": "Administrator",
  "module": "POSAwesome",
  "name": "POS Payment Entry Reference",

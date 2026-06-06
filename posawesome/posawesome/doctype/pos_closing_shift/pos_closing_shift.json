@@ -19,8 +19,22 @@
   "user",
   "section_break_12",
   "pos_transactions",
+  "section_break_txn_summary",
+  "total_sales",
+  "total_paid",
+  "column_break_txn_summary",
+  "total_credit_sales",
+  "total_outstanding",
   "section_break_9",
   "pos_payments",
+  "section_break_pay_summary",
+  "total_collected_outstanding",
+  "total_cash",
+  "total_knet",
+  "column_break_pay_summary",
+  "total_online",
+  "total_visa",
+  "total_other_mop",
   "section_break_if3m1",
   "payment_reconciliation_details",
   "section_break_11",
@@ -109,9 +123,117 @@
    "options": "Sales Invoice Reference"
   },
   {
+   "fieldname": "section_break_txn_summary",
+   "fieldtype": "Section Break",
+   "label": "Transaction Summary"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_sales",
+   "fieldtype": "Currency",
+   "label": "Total Sales",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_paid",
+   "fieldtype": "Currency",
+   "label": "Total Paid",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_txn_summary",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_credit_sales",
+   "fieldtype": "Currency",
+   "label": "Total Credit Sales",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_outstanding",
+   "fieldtype": "Currency",
+   "label": "Total Outstanding",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
    "fieldname": "section_break_9",
    "fieldtype": "Section Break",
    "read_only": 1
+  },
+  {
+   "fieldname": "pos_payments",
+   "fieldtype": "Table",
+   "label": "POS Payments",
+   "options": "POS Payment Entry Reference"
+  },
+  {
+   "fieldname": "section_break_pay_summary",
+   "fieldtype": "Section Break",
+   "label": "Payment Summary"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_collected_outstanding",
+   "fieldtype": "Currency",
+   "label": "Total Collected Outstanding",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_cash",
+   "fieldtype": "Currency",
+   "label": "Total Cash",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_knet",
+   "fieldtype": "Currency",
+   "label": "Total KNET",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_pay_summary",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_online",
+   "fieldtype": "Currency",
+   "label": "Total Online",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_visa",
+   "fieldtype": "Currency",
+   "label": "Total Visa",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_other_mop",
+   "fieldtype": "Currency",
+   "label": "Total Other MOP",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_if3m1",
+   "fieldtype": "Section Break"
   },
   {
    "depends_on": "eval:doc.docstatus==1",
@@ -186,21 +308,11 @@
    "label": "POS Opening Shift",
    "options": "POS Opening Shift",
    "reqd": 1
-  },
-  {
-   "fieldname": "pos_payments",
-   "fieldtype": "Table",
-   "label": "POS Payments",
-   "options": "POS Payment Entry Reference"
-  },
-  {
-   "fieldname": "section_break_if3m1",
-   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-12 03:01:49.146706",
+ "modified": "2026-06-07 02:13:00.000000",
  "modified_by": "Administrator",
  "module": "POSAwesome",
  "name": "POS Closing Shift",

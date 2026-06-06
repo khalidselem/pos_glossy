@@ -3,7 +3,37 @@
 		<div class="grid-body">
 			<div class="rows text-center">
 
-				<!-- Sales summary section -->
+				<!-- Transaction Summary Section -->
+				<div>
+						<h6 class="text-center uppercase" style="color: #8D99A6">{{ _("Transaction Summary") }}</h6>
+						<div class="tax-break-up" style="overflow-x: auto;">
+							<table class="table table-bordered table-hover">
+								<thead>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Sales') }}</td>
+										<td class='text-right'> {{ frappe.utils.fmt_money(data.total_sales or '', currency=currency) }}</td>
+									</tr>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Paid') }}</td>
+										<td class='text-right' style="color: #36b37e;"> {{ frappe.utils.fmt_money(data.total_paid or '', currency=currency) }}</td>
+									</tr>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Credit Sales') }}</td>
+										<td class='text-right' style="color: #ff8b00;"> {{ frappe.utils.fmt_money(data.total_credit_sales or '', currency=currency) }}</td>
+									</tr>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Outstanding') }}</td>
+										<td class='text-right' style="color: #de350b;"> {{ frappe.utils.fmt_money(data.total_outstanding or '', currency=currency) }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+				</div>
+				<!-- Section end -->
+
+				<!-- Sales Summary section -->
 				<div>
 						<h6 class="text-center uppercase" style="color: #8D99A6">{{ _("Sales Summary") }}</h6>
 						<div class="tax-break-up" style="overflow-x: auto;">
@@ -30,6 +60,44 @@
 				</div>
 				<!-- Section end -->
 
+				<!-- Payment Summary section -->
+				<div>
+						<h6 class="text-center uppercase" style="color: #8D99A6">{{ _("Payment Summary") }}</h6>
+						<div class="tax-break-up" style="overflow-x: auto;">
+							<table class="table table-bordered table-hover">
+								<thead>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Collected Outstanding') }}</td>
+										<td class='text-right' style="color: #36b37e;"> {{ frappe.utils.fmt_money(data.total_collected_outstanding or '', currency=currency) }}</td>
+									</tr>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Cash') }}</td>
+										<td class='text-right'> {{ frappe.utils.fmt_money(data.total_cash or '', currency=currency) }}</td>
+									</tr>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total KNET') }}</td>
+										<td class='text-right'> {{ frappe.utils.fmt_money(data.total_knet or '', currency=currency) }}</td>
+									</tr>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Online') }}</td>
+										<td class='text-right'> {{ frappe.utils.fmt_money(data.total_online or '', currency=currency) }}</td>
+									</tr>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Visa') }}</td>
+										<td class='text-right'> {{ frappe.utils.fmt_money(data.total_visa or '', currency=currency) }}</td>
+									</tr>
+									<tr>
+										<td class="text-left font-bold">{{ _('Total Other MOP') }}</td>
+										<td class='text-right'> {{ frappe.utils.fmt_money(data.total_other_mop or '', currency=currency) }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+				</div>
+				<!-- Section end -->
+
 				<!-- Mode of payment section -->
 				<div>
 						<h6 class="text-center uppercase" style="color: #8D99A6">{{ _("Mode of Payments") }}</h6>
@@ -46,6 +114,48 @@
 									<tr>
 										<td class="text-left">{{ d.mode_of_payment }}</td>
 										<td class='text-right'> {{ frappe.utils.fmt_money(d.expected_amount - d.opening_amount, currency=currency) }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- Section end -->
+
+				<!-- Invoice Status Breakdown -->
+				<div>
+						<h6 class="text-center uppercase" style="color: #8D99A6">{{ _("Invoice Status Breakdown") }}</h6>
+						<div class="tax-break-up" style="overflow-x: auto;">
+							<table class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<th class="text-left">{{ _("Invoice") }}</th>
+										<th class="text-left">{{ _("Customer") }}</th>
+										<th class="text-left">{{ _("MOP") }}</th>
+										<th class="text-right">{{ _("Amount") }}</th>
+										<th class="text-right">{{ _("Paid") }}</th>
+										<th class="text-right">{{ _("Outstanding") }}</th>
+										<th class="text-center">{{ _("Status") }}</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for d in data.pos_transactions %}
+									<tr>
+										<td class="text-left">{{ d.sales_invoice }}</td>
+										<td class="text-left">{{ d.customer }}</td>
+										<td class="text-left">{{ d.mode_of_payment or '' }}</td>
+										<td class='text-right'>{{ frappe.utils.fmt_money(d.grand_total, currency=currency) }}</td>
+										<td class='text-right' style="color: #36b37e;">{{ frappe.utils.fmt_money(d.paid_amount or 0, currency=currency) }}</td>
+										<td class='text-right' style="color: #de350b;">{{ frappe.utils.fmt_money(d.customer_outstanding or 0, currency=currency) }}</td>
+										<td class="text-center">
+											{% if d.payment_status == "Paid" %}
+												<span class="indicator-pill green">{{ _("Paid") }}</span>
+											{% elif d.payment_status == "Partial" %}
+												<span class="indicator-pill orange">{{ _("Partial") }}</span>
+											{% else %}
+												<span class="indicator-pill red">{{ _("Outstanding") }}</span>
+											{% endif %}
+										</td>
 									</tr>
 								{% endfor %}
 							</tbody>
