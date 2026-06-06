@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 import json
+import os
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import flt
@@ -385,9 +386,14 @@ class POSClosingShift(Document):
     @frappe.whitelist()
     def get_payment_reconciliation_details(self):
         currency = frappe.get_cached_value("Company", self.company, "default_currency")
+        template_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "closing_shift_details.html",
+        )
+        with open(template_path, "r") as template_file:
+            template = template_file.read()
         return frappe.render_template(
-            "posawesome/posawesome/doctype/pos_closing_shift/closing_shift_details.html",
-            {"data": self, "currency": currency},
+            template, {"data": self, "currency": currency}
         )
 
 
